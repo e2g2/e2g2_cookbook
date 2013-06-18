@@ -1,3 +1,3 @@
-default['geos']['version'] = '3.3.6'
-default['gdal']['version'] = '1.9.2'
-default['postgis']['version'] = '2.0.3'
+default['geos']['version'] = (Date.today.to_time - 1).strftime("%Y%m%d")
+default['gdal']['version'] = '1.10.0'
+default['postgis']['version'] = '2.1.0beta3dev'
