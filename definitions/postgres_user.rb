@@ -1,6 +1,6 @@
 define :postgres_user, action: :create, user: 'postgres', privileges: {} do
   privileges      = {superuser: false, createdb: false, login: false}.merge(params[:privileges])
-  exists          = "psql -c \"SELECT usename FROM pg_user WHERE usename='#{params[:name]}'\""
+  exists          = "psql -c \"SELECT usename FROM pg_user WHERE usename='#{params[:name]}'\" | grep #{params[:name]}"
   privileges_cmd  = privileges.collect {|priv, grant| (grant ? priv : "NO#{priv}").upcase }.join(' ')
 
   case params[:action].to_sym

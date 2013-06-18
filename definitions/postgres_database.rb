@@ -1,5 +1,5 @@
 define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', owner: 'postgres', locale: 'en_US.UTF8', template: 'template0' do
-  exists      = "psql -c \"SELECT datname from pg_database WHERE datname='#{params[:name]}'\""
+  exists      = "psql -c \"SELECT datname from pg_database WHERE datname='#{params[:name]}'\" | grep #{params[:name]}"
   extensions  = Array(params[:extensions])
   languages   = Array(params[:languages])
 
@@ -49,7 +49,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
           rm -rf /usr/local/src/postgresql/
         EOH
 
-        creates "/usr/share/postgresql/9.2/extension/address_standardizer--1.0.sql"
+        creates "#{node['postgresql']['dir']}/postgresql/extension/address_standardizer--1.0.sql"
         action :run
       end
     end
@@ -123,7 +123,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
           rm -rf /usr/local/src/postgis-#{node['postgis']['version']}/
         EOH
 
-        creates "/usr/share/postgresql/9.2/extension/postgis--#{node['postgis']['version']}.sql"
+        creates "#{node['postgresql']['dir']}/postgresql/extension/postgis--#{node['postgis']['version']}.sql"
         action :run
       end
     end

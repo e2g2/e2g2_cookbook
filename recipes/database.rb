@@ -10,6 +10,6 @@ end
 %w(development).each do |dbenv|
   postgres_database "e2g2_#{dbenv}" do
     owner 'e2g2'
-    extensions %w(address_standardizer citext fuzzystrmatch hstore pg_trgm postgis postgis_tiger_geocoder postgis_topology unaccent)
+    extensions %w(citext fuzzystrmatch hstore pg_trgm postgis postgis_tiger_geocoder postgis_topology unaccent)
   end
 end
