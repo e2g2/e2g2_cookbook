@@ -6,8 +6,4 @@ maintainer_email 'steve.stmartin@e2g2.com'
 license 'Apache 2.0'
 
 depends 'apt'
-depends 'build-essential'
-depends 'git'
-depends 'postgresql'
-
 supports 'ubuntu'
