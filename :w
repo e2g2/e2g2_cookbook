@@ -1,0 +1,16 @@
+define :postgres_user do
+  options     = {
+    name: params[:name]
+    password: params[:password],
+    password_encrypted: params[:password_encrypted] || false
+  }
+  privileges    = {superuser: false, createdb: false, login: false}
+  exists        = "psql -c \"SELECT usename FROM pg_user WHERE usename='#{params[:name]}'\""
+  password_cmd  = "#{options[:password_encrypted] ? "ENCRYPTED PASSWORD" : "PASSWORD" } '#{options[:password]}'"
+
+  execute "create postgres user #{options[:name]}" do
+    user "postgres"
+    command "psql -c \"CREATE ROLE #{options[:name]} WITH #{password_cmd}\""
+    not_if exists, user: "postgres"
+  end
+end
