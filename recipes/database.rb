@@ -1,7 +1,6 @@
 include_recipe 'postgresql::server'
 include_recipe 'postgresql::server_dev'
 include_recipe 'postgresql::contrib'
-include_recipe 'e2g2::postgis'
 
 # create user
 postgres_user 'e2g2' do
