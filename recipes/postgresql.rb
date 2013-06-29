@@ -1,8 +1,8 @@
-ENV['PATH'] += ":#{node['postgresql']['dir']}/bin"
+ENV['PATH'] = "#{node['postgresql']['dir']}/bin:#{ENV['PATH']}"
 ENV['LD_LIBRARY_PATH'] = "#{node['postgresql']['dir']}/lib"
 
 # install dependencies
-%w(build-essential chkconfig libreadline-dev zlib1g-dev flex bison libxml2-dev libxslt1-dev libssl-dev).each do |pkg|
+%w(build-essential libreadline-dev zlib1g-dev flex bison libxml2-dev libxslt1-dev libssl-dev).each do |pkg|
   package pkg
 end
 
@@ -28,7 +28,10 @@ bash "install_postgresql_#{node['postgresql']['version']}" do
     make && make install && \
     cd contrib && \
     make && make install && \
-    rm -rf /usr/local/src/postgresql-#{node['postgresql']['version']}/
+    rm -rf /usr/local/src/postgresql-#{node['postgresql']['version']}/ && \
+    echo "PATH=#{node['postgresql']['dir']}/bin:$PATH > /etc/environment && \
+    echo "LD_LIBRARY_PATH=#{node['postgresql']['dir']}/lib" >> /etc/environment && \
+    source /etc/environment
   EOH
 
   creates "#{node['postgresql']['dir']}/bin/initdb"

@@ -56,7 +56,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
 
     if extensions.include?('postgis')
       # install dependencies
-      %w(proj libjson0-dev xsltproc docbook-xsl gettext).each do |pkg|
+      %w(libproj-dev libjson0-dev xsltproc docbook-xsl gettext).each do |pkg|
         package pkg
       end
 
