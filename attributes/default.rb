@@ -1,5 +1,6 @@
 default['gdal']['version']        = '1.10.0'
-default['geos']['version']        = "20130627"
+default['geos']['version']        = '20130627'
+default['nginx']['version']       = '1.4.1'
 default['postgis']['version']     = '2.1.0beta3dev'
 default['postgresql']['dir']      = '/usr/local/pgsql'
 default['postgresql']['data_dir'] = '/usr/local/pgsql/data'

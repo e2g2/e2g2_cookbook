@@ -82,6 +82,15 @@ template "/etc/init.d/postgres" do
   notifies :restart, "service[postgres]"
 end
 
+template "#{node['postgresql']['data_dir']}/postgresql.conf" do
+  source "postgresql.conf.erb"
+  mode "0755"
+  owner "postgres"
+  group "postgres"
+
+  notifies :restart, "service[postgres]"
+end
+
 service "postgres" do
   supports status: true, restart: true, reload: true, start: true, stop: true
   action [:enable, :start]
