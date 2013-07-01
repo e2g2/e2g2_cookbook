@@ -18,9 +18,9 @@ remote_file "/usr/local/src/postgresql-#{node['postgresql']['version']}.tar.gz" 
 end
 
 # install PostgreSQL
-bash "install_postgresql_#{node['postgresql']['version']}" do
+execute "install_postgresql_#{node['postgresql']['version']}" do
   user "root"
-  code <<-EOH
+  command <<-EOH
     cd /usr/local/src && \
     tar xzvf postgresql-#{node['postgresql']['version']}.tar.gz && \
     cd postgresql-#{node['postgresql']['version']} && \
@@ -61,9 +61,9 @@ execute "setup postgres directory permissions" do
 end
 
 # initdb
-bash "init_postgresql_db" do
+execute "init_postgresql_db" do
   user "postgres"
-  code "#{node['postgresql']['dir']}/bin/initdb -D #{node['postgresql']['data_dir']}"
+  command "#{node['postgresql']['dir']}/bin/initdb -D #{node['postgresql']['data_dir']}"
   creates "#{node['postgresql']['data_dir']}/PG_VERSION"
   action :run
 end

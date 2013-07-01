@@ -39,13 +39,13 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install PAGC
-      bash "install_pagc_postgresql" do
+      execute "install_pagc_postgresql" do
         user "root"
-        code <<-EOH
-          cd /usr/local/src && \
-          tar xzvf pagc.tar.gz && \
-          cd postgresql && \
-          make && make install && \
+        command <<-EOH
+          cd /usr/local/src &&
+          tar xzvf pagc.tar.gz &&
+          cd postgresql &&
+          make && make install &&
           rm -rf /usr/local/src/postgresql/
         EOH
 
@@ -56,9 +56,11 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
 
     if extensions.include?('postgis')
       # install dependencies
-      %w(libproj-dev libjson0-dev xsltproc docbook-xsl gettext).each do |pkg|
-        package pkg
-      end
+      package 'libproj-dev'
+      package 'libjson0-dev'
+      package 'xsltproc'
+      package 'docbook-xsl'
+      package 'gettext'
 
       # download GDAL
       remote_file "/usr/local/src/gdal-#{node['gdal']['version']}.tar.gz" do
@@ -68,13 +70,13 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install GDAL
-      bash "install_gdal_#{node['gdal']['version']}" do
+      execute "install_gdal_#{node['gdal']['version']}" do
         user "root"
-        code <<-EOH
-          cd /usr/local/src && \
-          tar xzvf gdal-#{node['gdal']['version']}.tar.gz && \
-          cd gdal-#{node['gdal']['version']} && \
-          ./configure && make && make install && ldconfig && \
+        command <<-EOH
+          cd /usr/local/src &&
+          tar xzvf gdal-#{node['gdal']['version']}.tar.gz &&
+          cd gdal-#{node['gdal']['version']} &&
+          ./configure && make && make install && ldconfig &&
           rm -rf /usr/local/src/gdal-#{node['gdal']['version']}/
         EOH
 
@@ -90,14 +92,14 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install GEOS
-      bash "install_geos_#{node['geos']['version']}" do
+      execute "install_geos_#{node['geos']['version']}" do
         user "root"
-        code <<-EOH
-          cd /usr/local/src && \
-          bunzip2 -f geos-#{node['geos']['version']}.tar.bz2 && \
-          tar xvf geos-#{node['geos']['version']}.tar && \
-          cd geos-#{node['geos']['version']} && \
-          ./configure && make && make install && ldconfig && \
+        command <<-EOH
+          cd /usr/local/src &&
+          bunzip2 -f geos-#{node['geos']['version']}.tar.bz2 &&
+          tar xvf geos-#{node['geos']['version']}.tar &&
+          cd geos-#{node['geos']['version']} &&
+          ./configure && make && make install && ldconfig &&
           rm -rf /usr/local/src/geos-#{node['geos']['version']}/
         EOH
 
@@ -113,17 +115,17 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install PostGIS
-      bash "install_postgis_#{node['postgis']['version']}" do
+      execute "install_postgis_#{node['postgis']['version']}" do
         user "root"
-        code <<-EOH
-          cd /usr/local/src && \
-          tar xzvf postgis-#{node['postgis']['version']}.tar.gz && \
-          cd postgis-#{node['postgis']['version']} && \
-          ./configure && make && make install && ldconfig && \
+        command <<-EOH
+          cd /usr/local/src &&
+          tar xzvf postgis-#{node['postgis']['version']}.tar.gz &&
+          cd postgis-#{node['postgis']['version']} &&
+          ./configure && make && make install && ldconfig &&
           rm -rf /usr/local/src/postgis-#{node['postgis']['version']}/
         EOH
 
-        creates "#{node['postgresql']['dir']}/postgresql/extension/postgis--#{node['postgis']['version']}.sql"
+        creates "#{node['postgresql']['dir']}/share/extension/postgis.control"
         action :run
       end
     end
