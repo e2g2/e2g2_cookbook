@@ -27,7 +27,7 @@ template "/usr/local/nginx/conf/nginx.conf" do
   owner "root"
   group "root"
 
-  notifies :restart, "service[nginx]"
+  # notifies :restart, "service[nginx]"
 end
 
 # service "nginx" do
