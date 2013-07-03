@@ -78,8 +78,11 @@ template "/etc/init.d/postgres" do
     postgresql_dir: node['postgresql']['dir'],
     postgresql_data_dir: node['postgresql']['data_dir']
   )
+end
 
-  notifies :restart, "service[postgres]"
+service "postgres" do
+  supports status: true, restart: true, reload: true, start: true, stop: true
+  action [:enable, :restart]
 end
 
 template "#{node['postgresql']['data_dir']}/postgresql.conf" do
@@ -88,10 +91,5 @@ template "#{node['postgresql']['data_dir']}/postgresql.conf" do
   owner "postgres"
   group "postgres"
 
-  notifies :restart, "service[postgres]"
-end
-
-service "postgres" do
-  supports status: true, restart: true, reload: true, start: true, stop: true
-  action [:enable, :start]
+  notifies :reload, "service[postgres]"
 end

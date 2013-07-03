@@ -26,8 +26,11 @@ template "/etc/init.d/nginx" do
   mode "0755"
   owner "root"
   group "root"
+end
 
-  notifies :restart, "service[nginx]"
+service "nginx" do
+  supports status: true, restart: true, reload: true, start: true, stop: true
+  action [:enable, :restart]
 end
 
 template "/usr/local/nginx/conf/nginx.conf" do
@@ -36,10 +39,5 @@ template "/usr/local/nginx/conf/nginx.conf" do
   owner "root"
   group "root"
 
-  notifies :restart, "service[nginx]"
-end
-
-service "nginx" do
-  supports status: true, restart: true, reload: true, start: true, stop: true
-  action [:enable, :start]
+  notifies :reload, "service[nginx]"
 end
