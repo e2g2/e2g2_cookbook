@@ -14,6 +14,15 @@ user node['app']['user'] do
   action :create
 end
 
+%w(current releases shared/log shared/tmp/pids).each do |dir|
+  directory "#{node['app']['working_directory']}/#{dir}" do
+    owner node['app']['user']
+    group node['app']['user']
+    mode '0755'
+    recursive true
+  end
+end
+
 execute "install_nginx_#{node['nginx']['version']}" do
   user "root"
   command <<-EOH

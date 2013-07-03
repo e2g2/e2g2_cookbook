@@ -3,7 +3,7 @@ default['app']['name']              = "e2g2"
 default['app']['user']              = "deploy"
 default['app']['user_password']     = "$1$eLsK0ABE$fP/kPLaaqhKaRj8.5lXBL0"
 default['app']['server_name']       = "*.e2g2.dev"
-default['app']['working_directory'] = "/var/www"
+default['app']['working_directory'] = "/home/deploy/e2g2"
 
 # package versions
 default['gdal']['version']          = '1.10.0'
