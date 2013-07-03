@@ -49,7 +49,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
           rm -rf /usr/local/src/postgresql/
         EOH
 
-        creates "#{node['postgresql']['dir']}/postgresql/extension/address_standardizer--1.0.sql"
+        creates "/usr/local/pgsql/share/extension/address_standardizer--1.0.sql"
         action :run
       end
     end
@@ -125,7 +125,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
           rm -rf /usr/local/src/postgis-#{node['postgis']['version']}/
         EOH
 
-        creates "#{node['postgresql']['dir']}/share/extension/postgis.control"
+        creates "/usr/local/pgsql/share/extension/postgis.control"
         action :run
       end
     end

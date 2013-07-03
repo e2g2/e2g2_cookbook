@@ -1,4 +1,4 @@
-user deploy;
+user <%= node['app']['user'] %>;
 worker_processes <%= node['cpu']['total'] %>;
 worker_cpu_affinity <%= ['0001', '0010', '0100', '1000'].take(node['cpu']['total']).join(' ') %>;
 
@@ -23,31 +23,24 @@ http {
     server_name  localhost;
     client_max_body_size 2G;
 
-    if($request_method !~ ^(GET|HEAD|PUT|POST|DELETE|OPTIONS)$) {
-      return 405;
-    }
-
     if (-f $document_root/maintenance.html) {
       rewrite  ^(.*)$  /maintenance.html last;
       break;
     }
 
     location ~ ^/(assets)/ {
-      gzip_static on;
+      gzip        on;
       expires     max;
       add_header  Cache-Control public;
     }
 
     location / {
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header Host $http_host;
+      proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  Host $http_host;
+      proxy_redirect    off;
 
       if (-f $request_filename/index.html) {
         rewrite (.*) $1/index.html break;
-      }
-
-      if (-f $request_filename.html) {
-        rewrite (.*) $1.html break;
       }
 
       if (!-f $request_filename) {

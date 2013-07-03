@@ -6,6 +6,12 @@ remote_file "/usr/local/src/nginx-#{node['nginx']['version']}.tar.gz" do
   action :create_if_missing
 end
 
+user node['app']['user'] do
+  shell "/bin/bash"
+  password node['app']['user_password']
+  action :create
+end
+
 execute "install_nginx_#{node['nginx']['version']}" do
   user "root"
   command <<-EOH

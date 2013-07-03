@@ -1,17 +1,17 @@
-listen_addresses = '*'
-max_connections = 200
-shared_buffers = <%= "#{node['memory']['total'].to_i / 4}#{node['memory']['total'].gsub(/\d/, '')}" %>
-work_mem = 32MB
-maintenance_work_mem = 256MB
-synchronous_commit = off
-autovacuum_naptime = 5min
+listen_addresses      = '*'
+max_connections       = 200
+shared_buffers        = <%= "#{node['memory']['total'].to_i / 4}#{node['memory']['total'].gsub(/\d/, '')}" %>
+work_mem              = 32MB
+maintenance_work_mem  = 256MB
+synchronous_commit    = off
+autovacuum_naptime    = 5min
 
-datestyle = 'iso, mdy'
-timezone = 'UTC'
+datestyle   = 'iso, mdy'
+timezone    = 'UTC'
 lc_messages = 'C'			# locale for system error message
 lc_monetary = 'C'			# locale for monetary formatting
-lc_numeric = 'C'			# locale for number formatting
-lc_time = 'C'				  # locale for time formatting
+lc_numeric  = 'C'			# locale for number formatting
+lc_time     = 'C'		  # locale for time formatting
 
 # default configuration for text search
 default_text_search_config = 'pg_catalog.english'

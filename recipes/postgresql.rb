@@ -1,5 +1,5 @@
-ENV['PATH'] = "#{node['postgresql']['dir']}/bin:#{ENV['PATH']}"
-ENV['LD_LIBRARY_PATH'] = "#{node['postgresql']['dir']}/lib"
+ENV['PATH'] = "/usr/local/pgsql/bin:#{ENV['PATH']}"
+ENV['LD_LIBRARY_PATH'] = "/usr/local/pgsql/lib"
 
 # install dependencies
 gem_package "ruby-shadow"
@@ -21,17 +21,17 @@ execute "install_postgresql_#{node['postgresql']['version']}" do
     cd /usr/local/src && \
     tar xzvf postgresql-#{node['postgresql']['version']}.tar.gz && \
     cd postgresql-#{node['postgresql']['version']} && \
-    ./configure --with-openssl --with-libxml --with-libxslt --prefix=#{node['postgresql']['dir']} && \
+    ./configure --with-openssl --with-libxml --with-libxslt --prefix=/usr/local/pgsql && \
     make && make install && \
     cd contrib && \
     make && make install && \
     rm -rf /usr/local/src/postgresql-#{node['postgresql']['version']}/ && \
-    echo "PATH=#{node['postgresql']['dir']}/bin:$PATH > /etc/environment && \
-    echo "LD_LIBRARY_PATH=#{node['postgresql']['dir']}/lib" >> /etc/environment && \
+    echo "PATH=/usr/local/pgsql/bin:$PATH > /etc/environment && \
+    echo "LD_LIBRARY_PATH=/usr/local/pgsql/lib" >> /etc/environment && \
     source /etc/environment
   EOH
 
-  creates "#{node['postgresql']['dir']}/bin/initdb"
+  creates "/usr/local/pgsql/bin/initdb"
   action :run
 end
 
@@ -44,7 +44,7 @@ user "postgres" do
 end
 
 # add postgres data dir
-directory "#{node['postgresql']['data_dir']}" do
+directory "/usr/local/pgsql/data" do
   owner "postgres"
   group "postgres"
   mode "0700"
@@ -53,15 +53,15 @@ directory "#{node['postgresql']['data_dir']}" do
 end
 
 execute "setup postgres directory permissions" do
-  command "chown -Rf postgres:postgres #{node['postgresql']['dir']}"
-  only_if { Etc.getpwuid(File.stat(node['postgresql']['dir']).uid).name != "postgres" }
+  command "chown -Rf postgres:postgres /usr/local/pgsql"
+  only_if { Etc.getpwuid(File.stat("/usr/local/pgsql").uid).name != "postgres" }
 end
 
 # initdb
 execute "init_postgresql_db" do
   user "postgres"
-  command "#{node['postgresql']['dir']}/bin/initdb -D #{node['postgresql']['data_dir']}"
-  creates "#{node['postgresql']['data_dir']}/PG_VERSION"
+  command "/usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data"
+  creates "/usr/local/pgsql/data/PG_VERSION"
   action :run
 end
 
@@ -70,11 +70,6 @@ template "/etc/init.d/postgres" do
   mode "0755"
   owner "root"
   group "root"
-
-  variables(
-    postgresql_dir: node['postgresql']['dir'],
-    postgresql_data_dir: node['postgresql']['data_dir']
-  )
 end
 
 service "postgres" do
@@ -82,7 +77,7 @@ service "postgres" do
   action [:enable, :restart]
 end
 
-template "#{node['postgresql']['data_dir']}/postgresql.conf" do
+template "/usr/local/pgsql/data/postgresql.conf" do
   source "postgresql.conf.erb"
   mode "0755"
   owner "postgres"
