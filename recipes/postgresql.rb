@@ -2,12 +2,9 @@ ENV['PATH'] = "#{node['postgresql']['dir']}/bin:#{ENV['PATH']}"
 ENV['LD_LIBRARY_PATH'] = "#{node['postgresql']['dir']}/lib"
 
 # install dependencies
+gem_package "ruby-shadow"
 %w(build-essential libreadline-dev zlib1g-dev flex bison libxml2-dev libxslt1-dev libssl-dev).each do |pkg|
   package pkg
-end
-
-gem_package "ruby-shadow" do
-  action :install
 end
 
 # download PostgreSQL
