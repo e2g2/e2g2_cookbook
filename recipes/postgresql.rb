@@ -69,7 +69,7 @@ execute "init_postgresql_db" do
 end
 
 template "/etc/init.d/postgres" do
-  source "postgres.initd.erb"
+  source "postgres.init.erb"
   mode "0755"
   owner "root"
   group "root"

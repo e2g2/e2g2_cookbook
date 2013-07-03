@@ -21,16 +21,25 @@ bash "install_nginx_#{node['nginx']['version']}" do
   action :run
 end
 
+template "/etc/init.d/nginx" do
+  source "nginx.init.erb"
+  mode "0755"
+  owner "root"
+  group "root"
+
+  notifies :restart, "service[nginx]"
+end
+
 template "/usr/local/nginx/conf/nginx.conf" do
   source "nginx.conf.erb"
   mode "0755"
   owner "root"
   group "root"
 
-  # notifies :restart, "service[nginx]"
+  notifies :restart, "service[nginx]"
 end
 
-# service "nginx" do
-#   supports status: true, restart: true, reload: true, start: true, stop: true
-#   action [:enable, :start]
-# end
+service "nginx" do
+  supports status: true, restart: true, reload: true, start: true, stop: true
+  action [:enable, :start]
+end

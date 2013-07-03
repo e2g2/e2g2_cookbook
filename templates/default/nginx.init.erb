@@ -1,0 +1,61 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          nginx
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the nginx web server
+# Description:       starts nginx using start-stop-daemon
+### END INIT INFO
+
+# An init.d script that works under Ubuntu 12.04 FFS
+# load with sudo /usr/sbin/update-rc.d -f nginx defaults
+
+# CHANGE ME.
+PATH=/usr/local/nginx/sbin:$PATH
+DAEMON=/usr/local/nginx/sbin/nginx
+NAME=nginx
+DESC=nginx
+
+test -x $DAEMON || exit 0
+
+# Include nginx defaults if available
+if [ -f /etc/default/nginx ] ; then
+        . /etc/default/nginx
+fi
+
+set -e
+
+function start {
+  echo -n "Starting $DESC: "
+  start-stop-daemon --make --start --pidfile /var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+  echo "$NAME."
+}
+
+function stop {
+  echo -n "Stopping $DESC: "
+  $DAEMON -s stop
+  echo "$NAME."
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
