@@ -1,6 +1,3 @@
-ENV['PATH'] = "/usr/local/pgsql/bin:#{ENV['PATH']}"
-ENV['LD_LIBRARY_PATH'] = "/usr/local/pgsql/lib"
-
 # install dependencies
 gem_package "ruby-shadow"
 %w(build-essential libreadline-dev zlib1g-dev flex bison libxml2-dev libxslt1-dev libssl-dev).each do |pkg|
@@ -18,17 +15,14 @@ end
 execute "install_postgresql_#{node['postgresql']['version']}" do
   user "root"
   command <<-EOH
-    cd /usr/local/src && \
-    tar xzvf postgresql-#{node['postgresql']['version']}.tar.gz && \
-    cd postgresql-#{node['postgresql']['version']} && \
-    ./configure --with-openssl --with-libxml --with-libxslt --prefix=/usr/local/pgsql && \
-    make && make install && \
-    cd contrib && \
-    make && make install && \
-    rm -rf /usr/local/src/postgresql-#{node['postgresql']['version']}/ && \
-    echo "PATH=/usr/local/pgsql/bin:$PATH > /etc/environment && \
-    echo "LD_LIBRARY_PATH=/usr/local/pgsql/lib" >> /etc/environment && \
-    source /etc/environment
+    cd /usr/local/src &&
+    tar xzvf postgresql-#{node['postgresql']['version']}.tar.gz &&
+    cd postgresql-#{node['postgresql']['version']} &&
+    ./configure --with-openssl --with-libxml --with-libxslt --prefix=/usr/local/pgsql &&
+    make && make install &&
+    cd contrib &&
+    make && make install &&
+    rm -rf /usr/local/src/postgresql-#{node['postgresql']['version']}/
   EOH
 
   creates "/usr/local/pgsql/bin/initdb"
