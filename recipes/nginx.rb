@@ -6,9 +6,9 @@ remote_file "/usr/local/src/nginx-#{node['nginx']['version']}.tar.gz" do
   action :create_if_missing
 end
 
-bash "install_nginx_#{node['nginx']['version']}" do
+execute "install_nginx_#{node['nginx']['version']}" do
   user "root"
-  code <<-EOH
+  command <<-EOH
     cd /usr/local/src &&
     tar xzvf nginx-#{node['nginx']['version']}.tar.gz &&
     cd /usr/local/src/nginx-#{node['nginx']['version']} &&
