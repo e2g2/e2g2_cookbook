@@ -14,7 +14,7 @@ user node['app']['user'] do
   action :create
 end
 
-%w(current releases shared/log shared/tmp/pids).each do |dir|
+%w(current releases shared/log shared/tmp/pids shared/tmp/sockets).each do |dir|
   directory "#{node['app']['working_directory']}/#{dir}" do
     owner node['app']['user']
     group node['app']['user']
