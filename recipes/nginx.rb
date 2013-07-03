@@ -8,7 +8,9 @@ end
 
 user node['app']['user'] do
   shell "/bin/bash"
+  home "/home/#{node['app']['user']}"
   password node['app']['user_password']
+  supports manage_home: true
   action :create
 end
 
