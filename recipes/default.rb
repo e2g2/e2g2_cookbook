@@ -1,4 +1,5 @@
 include_recipe 'apt'
 include_recipe 'e2g2::database'
 include_recipe 'e2g2::ruby'
+include_recipe 'e2g2::bluepill'
 include_recipe 'e2g2::nginx'

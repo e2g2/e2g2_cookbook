@@ -23,7 +23,4 @@ execute "install_ruby_#{node['ruby']['version']}" do
   action :run
 end
 
-execute "install_bundler" do
-  command "gem install bundler"
-  creates "/usr/local/bin/bundle"
-end
+gem_install 'bundler'
