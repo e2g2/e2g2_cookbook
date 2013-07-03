@@ -1,3 +1,4 @@
+user deploy;
 worker_processes <%= node['cpu']['total'] %>;
 worker_cpu_affinity <%= ['0001', '0010', '0100', '1000'].take(node['cpu']['total']).join(' ') %>;
 
@@ -6,30 +7,53 @@ events {
 }
 
 http {
-    include       mime.types;
-    default_type  application/octet-stream;
-    sendfile        on;
+  include       mime.types;
+  default_type  application/octet-stream;
+  sendfile        on;
 
-    keepalive_timeout  15;
-    gzip  on;
+  keepalive_timeout  10;
+  gzip  on;
 
-    upstream puma {
-      server unix:/tmp/puma.sock;
+  upstream app {
+    server unix://tmp/puma.sock fail_timeout=0;
+  }
+
+  server {
+    listen       80;
+    server_name  localhost;
+    client_max_body_size 2G;
+
+    if($request_method !~ ^(GET|HEAD|PUT|POST|DELETE|OPTIONS)$) {
+      return 405;
     }
 
-    server {
-        listen       80;
-        server_name  localhost;
-
-        location / {
-            root   html;
-            index  index.html index.htm;
-        }
-
-        # redirect server error pages to the static page /50x.html
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
+    if (-f $document_root/maintenance.html) {
+      rewrite  ^(.*)$  /maintenance.html last;
+      break;
     }
+
+    location ~ ^/(assets)/ {
+      gzip_static on;
+      expires     max;
+      add_header  Cache-Control public;
+    }
+
+    location / {
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $http_host;
+
+      if (-f $request_filename/index.html) {
+        rewrite (.*) $1/index.html break;
+      }
+
+      if (-f $request_filename.html) {
+        rewrite (.*) $1.html break;
+      }
+
+      if (!-f $request_filename) {
+        proxy_pass http://app;
+        break;
+      }
+    }
+  }
 }

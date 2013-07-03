@@ -1,10 +1,10 @@
 listen_addresses = '*'
 max_connections = 200
-shared_buffers = <%= "#{node['memory']['total'].to_i / 4} #{node['memory']['total'].gsub(/\d/, '')}" %>
+shared_buffers = <%= "#{node['memory']['total'].to_i / 4}#{node['memory']['total'].gsub(/\d/, '')}" %>
 work_mem = 32MB
 maintenance_work_mem = 256MB
 synchronous_commit = off
-autovacuum_naptime = 5m
+autovacuum_naptime = 5min
 
 datestyle = 'iso, mdy'
 timezone = 'UTC'
