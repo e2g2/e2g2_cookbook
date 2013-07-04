@@ -15,7 +15,7 @@ http {
   gzip  on;
 
   upstream app {
-    server unix://<%= node['app']['working_directory'] %>/current/tmp/sockets/puma.sock fail_timeout=0;
+    server unix:///tmp/puma.sock fail_timeout=0;
   }
 
   server {

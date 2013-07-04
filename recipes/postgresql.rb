@@ -12,7 +12,7 @@ remote_file "/usr/local/src/postgresql-#{node['postgresql']['version']}.tar.gz" 
 end
 
 # install PostgreSQL
-execute "install_postgresql_#{node['postgresql']['version']}" do
+bash "install_postgresql_#{node['postgresql']['version']}" do
   user "root"
   command <<-EOH
     cd /usr/local/src &&
@@ -46,13 +46,13 @@ directory "/usr/local/pgsql/data" do
   action :create
 end
 
-execute "setup postgres directory permissions" do
+bash "setup postgres directory permissions" do
   command "chown -Rf postgres:postgres /usr/local/pgsql"
   only_if { Etc.getpwuid(File.stat("/usr/local/pgsql").uid).name != "postgres" }
 end
 
 # initdb
-execute "init_postgresql_db" do
+bash "init_postgresql_db" do
   user "postgres"
   command "/usr/local/pgsql/bin/initdb -D /usr/local/pgsql/data"
   creates "/usr/local/pgsql/data/PG_VERSION"

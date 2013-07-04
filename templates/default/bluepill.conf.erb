@@ -1,0 +1,11 @@
+description "<%= node['app']['name'] %> bluepill"
+
+start on runlevel [2]
+stop on runlevel [016]
+
+expect daemon
+respawn
+
+env PATH=/usr/local/bin
+exec bluepill load <%= node['app']['working_directory'] %>/current/config/bluepill.rb
+

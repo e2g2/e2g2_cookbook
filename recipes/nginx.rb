@@ -23,7 +23,7 @@ end
   end
 end
 
-execute "install_nginx_#{node['nginx']['version']}" do
+bash "install_nginx_#{node['nginx']['version']}" do
   user "root"
   command <<-EOH
     cd /usr/local/src &&

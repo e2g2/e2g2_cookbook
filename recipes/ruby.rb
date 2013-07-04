@@ -8,7 +8,7 @@ remote_file "/usr/local/src/ruby-#{node['ruby']['version']}.tar.gz" do
   action :create_if_missing
 end
 
-execute "install_ruby_#{node['ruby']['version']}" do
+bash "install_ruby_#{node['ruby']['version']}" do
   user "root"
   command <<-EOH
     cd /usr/local/src &&
@@ -23,4 +23,4 @@ execute "install_ruby_#{node['ruby']['version']}" do
   action :run
 end
 
-gem_install 'bundler'
+gem_package 'bundler'

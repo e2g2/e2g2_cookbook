@@ -8,7 +8,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
     #####################################
     # create database
     #####################################
-    execute "creating postgres database #{params[:name]}" do
+    bash "creating postgres database #{params[:name]}" do
       user params[:user]
       command "createdb -U #{params[:user]} -E #{params[:encoding]} -O #{params[:owner]} -l #{params[:locale]} -T #{params[:template]} #{params[:name]}"
       not_if exists, user: params[:user]
@@ -18,7 +18,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
     # enable languages
     #####################################
     languages.each do |language|
-      execute "createlang #{language} #{params[:name]}" do
+      bash "createlang #{language} #{params[:name]}" do
         user params[:user]
         not_if "psql -c 'SELECT lanname FROM pg_catalog.pg_language' #{params[:name]} | grep '^ #{language}$'", user: params[:user]
       end
@@ -39,7 +39,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install PAGC
-      execute "install_pagc_postgresql" do
+      bash "install_pagc_postgresql" do
         user "root"
         command <<-EOH
           cd /usr/local/src &&
@@ -70,7 +70,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install GDAL
-      execute "install_gdal_#{node['gdal']['version']}" do
+      bash "install_gdal_#{node['gdal']['version']}" do
         user "root"
         command <<-EOH
           cd /usr/local/src &&
@@ -92,7 +92,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install GEOS
-      execute "install_geos_#{node['geos']['version']}" do
+      bash "install_geos_#{node['geos']['version']}" do
         user "root"
         command <<-EOH
           cd /usr/local/src &&
@@ -115,7 +115,7 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
 
       # install PostGIS
-      execute "install_postgis_#{node['postgis']['version']}" do
+      bash "install_postgis_#{node['postgis']['version']}" do
         user "root"
         command <<-EOH
           cd /usr/local/src &&
@@ -134,12 +134,12 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
     # enable extensions
     #####################################
     extensions.each do |extension|
-      execute "psql -c 'CREATE EXTENSION IF NOT EXISTS #{extension}' #{params[:name]}" do
+      bash "psql -c 'CREATE EXTENSION IF NOT EXISTS #{extension}' #{params[:name]}" do
         user params[:user]
       end
     end
   when :drop
-    execute "dropping postgres database #{params[:name]}" do
+    bash "dropping postgres database #{params[:name]}" do
       user params[:user]
       command "dropdb -U #{params[:user]} #{params[:name]}"
       only_if exists, user: params[:user]

@@ -1,4 +1,4 @@
-ENV['PATH'] = "./bin:/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/chef/embedded/bin"
+ENV['PATH'] = "/usr/local/pgsql/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/chef/embedded/bin:./bin"
 ENV['LD_LIBRARY_PATH'] = "/usr/local/pgsql/lib"
 
 bash "set_environment_variables" do
@@ -11,6 +11,6 @@ end
 
 include_recipe 'apt'
 include_recipe 'e2g2::ruby'
-include_recipe 'e2g2::bluepill'
 include_recipe 'e2g2::database'
 include_recipe 'e2g2::web'
+include_recipe 'e2g2::bluepill'
