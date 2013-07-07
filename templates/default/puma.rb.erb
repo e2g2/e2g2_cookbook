@@ -1,9 +1,10 @@
 #!/usr/bin/env puma
 directory "<%= node['app']['working_directory'] %>/current"
-threads 4,16
-workers <%= node['cpu']['total'] %>
+threads 8,16
+workers <%= (node['cpu']['total'] || 1) * 2 %>
 bind "unix:///tmp/puma.sock"
 rackup "<%= node['app']['working_directory'] %>/current/config.ru"
+environment '<%= node['app']['rails_env'] %>'
 
 daemonize
 preload_app!

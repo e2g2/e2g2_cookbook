@@ -4,6 +4,7 @@ default['app']['user']              = "deploy"
 default['app']['user_password']     = "$1$eLsK0ABE$fP/kPLaaqhKaRj8.5lXBL0"
 default['app']['server_name']       = "*.e2g2.dev"
 default['app']['working_directory'] = "/home/deploy/e2g2"
+default['app']['rails_env']         = "development"
 
 # monit
 default['monit']['password']        = "secret"

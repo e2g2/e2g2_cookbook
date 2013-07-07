@@ -1,6 +1,6 @@
 check process puma with pidfile <%= node['app']['working_directory'] %>/shared/tmp/pids/puma.pid
   start program = "/bin/su - deploy -c 'cd <%= node['app']['working_directory'] %>/current; ./bin/puma -C config/puma.rb start'"
   stop program = "/bin/kill -s SIGTERM `cat <%= node['app']['working_directory'] %>/shared/tmp/pids/puma.pid"
-  if mem > 200.0 MB for 2 cycles then restart
+  if mem > 400.0 MB for 4 cycles then restart
   if cpu > 50% for 3 cycles then restart
   if 5 restarts within 5 cycles then timeout
