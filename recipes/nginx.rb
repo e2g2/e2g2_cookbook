@@ -21,7 +21,12 @@ end
     mode '0755'
     recursive true
   end
+
+  bash "chown -R #{node['app']['user']}:#{node['app']['user']} #{node['app']['working_directory']}/#{dir}"
 end
+
+bash "chmod -R 0666 #{node['app']['working_directory']}/shared/log"
+bash "chmod -R 0666 #{node['app']['working_directory']}/current/log"
 
 bash "install_nginx_#{node['nginx']['version']}" do
   user "root"

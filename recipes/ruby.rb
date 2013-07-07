@@ -1,8 +1,6 @@
 package 'libreadline-dev'
 package 'libssl-dev'
-package 'libsqlite3-dev'
 package 'libyaml-0-2'
-package 'nodejs'
 
 remote_file "/usr/local/src/ruby-#{node['ruby']['version']}.tar.gz" do
   source "http://ftp.ruby-lang.org/pub/ruby/ruby-#{node['ruby']['version']}.tar.gz"
