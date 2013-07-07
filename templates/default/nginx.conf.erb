@@ -31,6 +31,7 @@ http {
 
     location ~ "^/assets/(.*/)*.*-[0-9a-f]{32}.*" {
       root        <%= "#{node['app']['working_directory']}/current/public" %>;
+      gzip_static on;
       expires     max;
       add_header  Cache-Control public;
     }

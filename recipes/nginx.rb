@@ -34,7 +34,7 @@ bash "install_nginx_#{node['nginx']['version']}" do
     cd /usr/local/src &&
     tar xzvf nginx-#{node['nginx']['version']}.tar.gz &&
     cd /usr/local/src/nginx-#{node['nginx']['version']} &&
-    ./configure &&
+    ./configure --with-http_gzip_static_module &&
     make && make install &&
     rm -rf /usr/local/src/nginx-#{node['nginx']['version']}
   EOH
