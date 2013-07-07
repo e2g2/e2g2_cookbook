@@ -58,3 +58,8 @@ template "/usr/local/nginx/conf/nginx.conf" do
 
   notifies :reload, "service[nginx]"
 end
+
+template "/etc/monit/conf.d/nginx.conf" do
+  source "nginx.monit.erb"
+  notifies :reload, "service[monit]"
+end

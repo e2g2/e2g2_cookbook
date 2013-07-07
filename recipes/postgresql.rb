@@ -79,3 +79,8 @@ template "/usr/local/pgsql/data/postgresql.conf" do
 
   notifies :reload, "service[postgres]"
 end
+
+template "/etc/monit/conf.d/postgres.conf" do
+  source "postgres.monit.erb"
+  notifies :reload, "service[monit]"
+end
