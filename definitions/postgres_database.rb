@@ -54,6 +54,13 @@ define :postgres_database, action: :create, user: 'postgres', encoding: 'utf8', 
       end
     end
 
+    if extensions.include?('fuzzystrmatch') || extensions.include?('pg_trgm')
+      package 'hunspell-en-us'
+      execute "cp /usr/share/hunspell/en_US.aff /usr/local/pgsql/share/tsearch_data/hunspell_en_us.affix"
+      execute "cp /usr/share/hunspell/en_US.dic /usr/local/pgsql/share/tsearch_data/hunspell_en_us.dict"
+      execute "chown -R postgres:postgres /usr/local/pgsql/share/tsearch_data"
+    end
+
     if extensions.include?('postgis')
       # install dependencies
       package 'libproj-dev'
