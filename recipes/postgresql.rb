@@ -66,6 +66,13 @@ template "/etc/init.d/postgres" do
   group "root"
 end
 
+template "/usr/local/pgsql/data/pg_hba.conf" do
+  source "pg_hba.conf"
+  mode "0400"
+  owner "postgres"
+  group "postgres"
+end
+
 service "postgres" do
   supports status: true, restart: true, reload: true, start: true, stop: true
   action [:enable, :restart]
