@@ -11,8 +11,8 @@ default['monit']['password']        = "secret"
 
 # package versions
 default['gdal']['version']          = '1.10.0'
-default['geos']['version']          = '20130627'
+default['geos']['version']          = '20130724'
 default['nginx']['version']         = '1.5.2'
-default['postgis']['version']       = '2.1.0beta3dev'
+default['postgis']['version']       = '2.1.0rc1'
 default['postgresql']['version']    = '9.3beta2'
 default['ruby']['version']          = '2.0.0-p247'
