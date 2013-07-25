@@ -1,0 +1,6 @@
+check process sidekiq with pidfile <%= %>
+  start program = "/bin/su - deploy -c 'cd <%= node['app']['working_directory'] %>/current; ./bin/sidekiq -C config/sidekiq.yml'"
+  stop program = "/bin/kill -s SIGTERM `cat <%= node['app']['working_directory'] %>/shared/tmp/pids/sidekiq.pid"
+  if totalmem > 400MB for 4 cycles then restart
+  if cpu > 50% for 3 cycles then restart
+  if 5 restarts within 5 cycles then timeout

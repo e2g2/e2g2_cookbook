@@ -1,0 +1,12 @@
+---
+:verbose: false
+:pidfile: ./tmp/pids/sidekiq.pid
+:logfile: ./log/sidekiq.log
+:concurrency: 25
+:queues:
+  - [low, 3]
+  - [carrierwave, 4]
+  - [default, 5]
+  - [critical, 7]
+development:
+  :concurrency: 10
