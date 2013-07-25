@@ -7,22 +7,37 @@ events {
 }
 
 http {
-  include       mime.types;
-  default_type  application/octet-stream;
-  sendfile        on;
-
-  keepalive_timeout  10;
-  gzip  on;
+  include               mime.types;
+  default_type          application/octet-stream;
+  sendfile              on;
+  sendfile_max_chunk    512K
+  client_max_body_size  500M;
+  gzip                  on;
+  gzip_comp_level       4;
+  gzip_proxied          no-cache;
+  gzip_types            text/plain text/css application/x-javascript text/xml application/xml text/javascript;
+  server_tokens         off;
 
   upstream app {
     server unix:///tmp/puma.sock fail_timeout=0;
   }
 
   server {
-    listen       80;
-    server_name  <%= node['app']['server_name'] %>;
-    root         <%= "#{node['app']['working_directory']}/current/public" %>;
-    client_max_body_size 2G;
+    server_name   <%= node['app']['server_name'] %>;
+    root          <%= "#{node['app']['working_directory']}/current/public" %>;
+    access_log    <%= "#{node['app']['working_directory']}/shared/logs/nginx.access.log" %>;
+    error_log     <%= "#{node['app']['working_directory']}/shared/logs/nginx.error.log" %>;
+
+    listen        80;
+
+    <% unless node['app']['rails_env'].to_s == "development" %>
+    listen        443 ssl spdy;
+    ssl_certificate     server.crt;
+    ssl_certificate     server.key;
+    ssl_session_cache   shared:SSL:10m;
+    ssl_session_timeout 10m;
+    spdy_headers_comp   7;
+    <% end %>
 
     if (-f $document_root/maintenance.html) {
       rewrite  ^(.*)$  /maintenance.html last;
@@ -31,16 +46,27 @@ http {
 
     <% unless node['app']['rails_env'].to_s == "development" %>
     location ~ "^/assets/(.*/)*.*-[0-9a-f]{32}.*" {
-      root        <%= "#{node['app']['working_directory']}/current/public" %>;
+      access_log  off;
       gzip_static on;
-      expires     max;
-      add_header  Cache-Control public;
+
+      # Per RFC2616 - 1 year maximum expiry
+      # http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+      expires 1y;
+      
+      # Some browsers still send conditional-GET requests if there's a
+      # Last-Modified header or an ETag header even if they haven't
+      # reached the expiry date sent in the Expires header.
+      add_header Last-Modified "";
+      add_header ETag "";
+      add_header Cache-Control public;
+      break;
     }
     <% end %>
 
     try_files $uri/index.html $uri @app;
 
     location @app {
+      proxy_set_header  X-Real-IP       $remote_addr;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  Host $http_host;
       proxy_redirect    off;
