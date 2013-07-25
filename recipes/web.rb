@@ -1,5 +1,4 @@
 include_recipe "e2g2::nginx"
-include_recipe "e2g2::sphinx"
 include_recipe "e2g2::puma"
 
 # install gem dependencies
